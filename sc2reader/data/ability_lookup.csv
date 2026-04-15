@@ -858,6 +858,7 @@ ChronoBoostEnergyCost,ChronoBoostEnergyCost
 ObserverMorphtoObserverSiege,ObserverMorphtoObserverSiege
 RavenRepairDroneHeal,RavenRepairDroneHeal
 NexusMassRecall,NexusMassRecall
+EnergyRecharge,EnergyRecharge
 OverlordSingleTransport,Load,,UnloadAt
 ParasiticBombRelayDodge,ParasiticBombRelayDodge
 ViperParasiticBombRelay,ViperParasiticBombRelay

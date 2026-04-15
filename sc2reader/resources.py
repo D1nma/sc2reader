@@ -878,7 +878,11 @@ class Replay(Resource):
         )
         self.register_datapack(
             datapacks["LotV"]["89720"],
-            lambda r: r.expansion == "LotV" and 89634 <= r.build,
+            lambda r: r.expansion == "LotV" and 89634 <= r.build < 96592,
+        )
+        self.register_datapack(
+            datapacks["LotV"]["96592"],
+            lambda r: r.expansion == "LotV" and 96592 <= r.build,
         )
 
     # Internal Methods
