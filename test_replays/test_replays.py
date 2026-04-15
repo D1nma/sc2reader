@@ -803,5 +803,40 @@ class MockPlayer:
         self.pid = None
 
 
+class TestDatapackPatches(unittest.TestCase):
+    """Verify ability ID remaps for modern SC2 builds (>= 89720)."""
+
+    def test_build_89720_nexus_abilities(self):
+        from sc2reader.data import datapacks
+
+        build = datapacks["LotV"]["89720"]
+
+        # 23136 was wrongly resolved as NexusMassRecall in old datapacks,
+        # but in builds >= 96592 it is actually ChronoBoostEnergyCost.
+        self.assertEqual(build.abilities[23136].name, "ChronoBoostEnergyCost")
+
+        # Strategic Recall abilities added in modern builds.
+        self.assertEqual(build.abilities[22592].name, "NexusMassRecall")
+        self.assertEqual(build.abilities[23392].name, "NexusMassRecall")
+
+        # Energy Recharge abilities added in 5.0.14+.
+        self.assertEqual(build.abilities[23168].name, "EnergyRecharge")
+        self.assertEqual(build.abilities[23424].name, "EnergyRecharge")
+
+    def test_build_80949_unaffected(self):
+        from sc2reader.data import datapacks
+
+        build = datapacks["LotV"]["80949"]
+
+        # Older build should keep the stale (but historically correct) mapping.
+        self.assertEqual(build.abilities[23136].name, "NexusMassRecall")
+
+        # Modern abilities should not exist in old build.
+        self.assertNotIn(22592, build.abilities)
+        self.assertNotIn(23392, build.abilities)
+        self.assertNotIn(23168, build.abilities)
+        self.assertNotIn(23424, build.abilities)
+
+
 if __name__ == "__main__":
     unittest.main()
