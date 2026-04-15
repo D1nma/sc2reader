@@ -447,37 +447,6 @@ def load_build(expansion, version):
                 build_time=build_time,
             )
 
-    # Patch for modern SC2 builds (>= 89720, e.g. 5.0.14+) where Blizzard shifted
-    # Nexus ability IDs. The stale datapack resolves 23136 as NexusMassRecall,
-    # but it is actually ChronoBoostEnergyCost. New abilities were also added:
-    # Strategic Recall (22592, 23392) and Energy Recharge (23168, 23424).
-    try:
-        version_int = int(version)
-    except ValueError:
-        version_int = 0
-
-    if version_int >= 89720:
-        # Fix stale mapping: 23136 was NexusMassRecall, now ChronoBoostEnergyCost
-        if 23136 in build.abilities:
-            old_ability = build.abilities.pop(23136)
-            if getattr(build, old_ability.name, None) is old_ability:
-                delattr(build, old_ability.name)
-            build.add_ability(
-                ability_id=23136,
-                name="ChronoBoostEnergyCost",
-                title="Chrono Boost",
-            )
-
-        # Add missing modern Nexus abilities
-        for ability_id, name, title in (
-            (22592, "NexusMassRecall", "Strategic Recall"),
-            (23392, "NexusMassRecall", "Strategic Recall"),
-            (23168, "EnergyRecharge", "Energy Recharge"),
-            (23424, "EnergyRecharge", "Energy Recharge"),
-        ):
-            if ability_id not in build.abilities:
-                build.add_ability(ability_id=ability_id, name=name, title=title)
-
     return build
 
 
@@ -508,6 +477,7 @@ for version in (
     "77379",
     "80949",
     "89720",
+    "96592",
 ):
     lotv_builds[version] = load_build("LotV", version)
 

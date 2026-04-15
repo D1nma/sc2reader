@@ -3,10 +3,11 @@ CHANGELOG
 
 1.8.1 - Unreleased
 ------------------
-* Fix stale Nexus ability ID mappings for builds >= 89720 (SC2 5.0.14+):
+* Fix stale Nexus ability ID mappings for builds >= 96592 (SC2 5.0.15+):
   - Remap ability 23136 from ``NexusMassRecall`` to ``ChronoBoostEnergyCost``
   - Add missing Strategic Recall abilities (22592, 23392) as ``NexusMassRecall``
   - Add missing Energy Recharge abilities (23168, 23424) as ``EnergyRecharge``
+  - Add explicit LotV ``96592`` datapack files and coverage tests against ``89720``
 
 1.8.0 - May 4, 2022
 -------------------
