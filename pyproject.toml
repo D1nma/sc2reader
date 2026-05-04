@@ -46,6 +46,7 @@ dynamic = [
 dependencies = [
   "mpyq",
   "pillow",
+  "defusedxml",
 ]
 optional-dependencies.testing = [
   "pytest",
