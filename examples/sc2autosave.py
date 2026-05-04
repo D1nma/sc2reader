@@ -316,8 +316,8 @@ def filter_out_replay(args, replay):
 # We need to create these compare functions at runtime because the ordering
 # hinges on the --favored PLAYER options passed in from the command line.
 def create_compare_funcs(args):
-    favored_list = [name.lower() for name in args.favored]
-    favored_set = set(favored_list)
+    favored_indices = {name.lower(): i for i, name in enumerate(args.favored)}
+    favored_set = set(favored_indices.keys())
 
     def player_compare(player1, player2):
         # Normalize the player names and generate our key metrics
