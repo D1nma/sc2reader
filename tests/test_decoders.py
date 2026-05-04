@@ -47,8 +47,12 @@ class TestDecoders(unittest.TestCase):
         # End of buffer
         self.assertEqual(decoder.read_range(7, 10), b"\x07\x08\x09")
 
-        # Out of bounds
+        # Out of bounds - should behave like python slicing
         self.assertEqual(decoder.read_range(8, 15), b"\x08\x09")
+        self.assertEqual(decoder.read_range(15, 20), b"")
+
+        # Negative indices - also standard python slicing behavior
+        self.assertEqual(decoder.read_range(-3, -1), b"\x07\x08")
 
         # Ensure it doesn't affect or depends on the current position
         decoder.read_bits(8)
