@@ -1,11 +1,5 @@
 #!/usr/bin/env python
 
-import os
-import pickle
-import shutil
-import sqlite3
-import sys
-import time
 
 import sc2reader
 
