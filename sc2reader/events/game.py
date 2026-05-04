@@ -233,21 +233,21 @@ class CommandEvent(GameEvent):
         self.other_unit = None
 
     def __str__(self):
-        string = self._str_prefix()
+        parts = [self._str_prefix()]
         if self.has_ability:
-            string += f"Ability ({self.ability_id:X})"
+            parts.append(f"Ability ({self.ability_id:X})")
             if self.ability:
-                string += f" - {self.ability.name}"
+                parts.append(f" - {self.ability.name}")
         else:
-            string += "Right Click"
+            parts.append("Right Click")
 
         if self.ability_type == "TargetUnit":
-            string += f"; Target: {self.target.name} [{self.target_unit_id:0>8X}]"
+            parts.append(f"; Target: {self.target.name} [{self.target_unit_id:0>8X}]")
 
         if self.ability_type in ("TargetPoint", "TargetUnit"):
-            string += f"; Location: {str(self.location)}"
+            parts.append(f"; Location: {str(self.location)}")
 
-        return string
+        return "".join(parts)
 
 
 class BasicCommandEvent(CommandEvent):
