@@ -316,7 +316,8 @@ def filter_out_replay(args, replay):
 # We need to create these compare functions at runtime because the ordering
 # hinges on the --favored PLAYER options passed in from the command line.
 def create_compare_funcs(args):
-    favored_set = {name.lower() for name in args.favored}
+    favored_list = [name.lower() for name in args.favored]
+    favored_set = set(favored_list)
 
     def player_compare(player1, player2):
         # Normalize the player names and generate our key metrics
@@ -333,14 +334,21 @@ def create_compare_funcs(args):
 
         # The most favored person will always be listed first
         elif player1_favored and player2_favored:
-            player1_index = args.favored.index(player1_name)
-            player2_index = args.favored.index(player2_name)
+            player1_index = favored_list.index(player1_name)
+            player2_index = favored_list.index(player2_name)
             return player1_index - player2_index
 
-        # If neither is favored, we'll order by number for now
-        # TODO: Allow command line specification of other orderings (maybe?)
+        # If neither is favored, we'll order by the requested field
         else:
-            return player1.pid - player2.pid
+            if args.player_order == "name":
+                if player1_name < player2_name:
+                    return -1
+                elif player1_name > player2_name:
+                    return 1
+                else:
+                    return 0
+            else:
+                return player1.pid - player2.pid
 
     def team_compare(team1, team2):
         # Normalize the team name lists and generate our key metrics
@@ -355,14 +363,13 @@ def create_compare_funcs(args):
         elif team2_favored and not team1_favored:
             return 1
 
-        # The team with the most favored person will always come first
+        # The team with the most favored person (lowest index) will always come first
         elif team1_favored and team2_favored:
-            team1_best = sorted(args.favored.index(n) for n in team1_favored)
-            team2_best = sorted(args.favored.index(n) for n in team2_favored)
-            return team1_best[-1] - team2_best[-1]
+            team1_best = min(favored_list.index(n) for n in team1_favored)
+            team2_best = min(favored_list.index(n) for n in team2_favored)
+            return team1_best - team2_best
 
-        # If neither is favored, we'll order by number for now
-        # TODO: Allow command line specification of other orderings (maybe?)
+        # If neither is favored, we'll order by the requested field
         else:
             return team1.number - team2.number
 
@@ -615,14 +622,20 @@ def main():
         default="%m-%d-%Y",
         help="The date format string used to render the :date content item.",
     )
-    """
-    renaming.add_argument('--team-order-by',
-        dest='team_order', type=str, metavar='FIELD', default='NUMBER',
-        help='The field by which teams are ordered.')
-    renaming.add_argument('--player-order-by',
-        dest='player_order', type=str, metavar='FIELD', default='NAME',
-        help='The field by which players are ordered on teams.')
-    """
+    renaming.add_argument(
+        "--team-order-by",
+        dest="team_order",
+        choices=["number"],
+        default="number",
+        help="The field by which teams are ordered.",
+    )
+    renaming.add_argument(
+        "--player-order-by",
+        dest="player_order",
+        choices=["pid", "name"],
+        default="pid",
+        help="The field by which players are ordered on teams.",
+    )
     renaming.add_argument(
         "--favored",
         dest="favored",
