@@ -242,7 +242,9 @@ class CommandEvent(GameEvent):
             parts.append("Right Click")
 
         if self.ability_type == "TargetUnit":
-            parts.append(f"; Target: {self.target.name} [{self.target_unit_id:0>8X}]")
+            target = getattr(self, 'target', getattr(self, 'target_unit', None))
+            target_name = target.name if target else "Unknown"
+            parts.append(f"; Target: {target_name} [{(getattr(self, 'target_unit_id', 0) or 0):0>8X}]")
 
         if self.ability_type in ("TargetPoint", "TargetUnit"):
             parts.append(f"; Location: {str(self.location)}")
