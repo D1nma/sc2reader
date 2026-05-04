@@ -1,7 +1,7 @@
 from collections import defaultdict, namedtuple
 from datetime import datetime, timezone
 import hashlib
-from xml.etree import ElementTree
+import defusedxml.ElementTree as ElementTree
 import zlib
 
 import mpyq
