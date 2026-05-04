@@ -316,8 +316,8 @@ def filter_out_replay(args, replay):
 # We need to create these compare functions at runtime because the ordering
 # hinges on the --favored PLAYER options passed in from the command line.
 def create_compare_funcs(args):
-    favored_indices = {name.lower(): i for i, name in enumerate(args.favored)}
-    favored_set = set(favored_indices.keys())
+    favored_list = [name.lower() for name in args.favored]
+    favored_set = set(favored_list)
 
     def player_compare(player1, player2):
         # Normalize the player names and generate our key metrics
@@ -371,7 +371,10 @@ def create_compare_funcs(args):
 
         # If neither is favored, we'll order by the requested field
         else:
-            return team1.number - team2.number
+            if args.team_order == "number":
+                return team1.number - team2.number
+            else:
+                return team1.number - team2.number
 
     return team_compare, player_compare
 
