@@ -645,6 +645,16 @@ class CameraEvent(GameEvent):
 
 
 @loggable
+
+class AllianceEvent(GameEvent):
+    """
+    Generated when a player shares control or vision.
+    """
+    def __init__(self, frames, data):
+        super().__init__(frames, data["player_id"])
+        self.alliance = data["alliance"]
+        self.control = data["control"]
+
 class ResourceTradeEvent(GameEvent):
     """
     Generated when a player trades resources with another player. But not when fullfulling
