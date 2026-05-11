@@ -1,9 +1,9 @@
-import functools
-
 from sc2reader.events.base import Event
 from sc2reader.utils import Length
 
-clamp = functools.partial(max, 0)
+
+def clamp(n):
+    return max(0, n)
 
 
 class TrackerEvent(Event):
