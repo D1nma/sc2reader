@@ -880,9 +880,20 @@ class Replay(Resource):
             datapacks["LotV"]["89720"],
             lambda r: r.expansion == "LotV" and 89634 <= r.build < 96592,
         )
+        # D1nma: corrected Nexus ability IDs for the 5.0.14/15 window
         self.register_datapack(
             datapacks["LotV"]["96592"],
-            lambda r: r.expansion == "LotV" and 96592 <= r.build,
+            lambda r: r.expansion == "LotV" and 96592 <= r.build < 96883,
+        )
+        # first build of 5.0.15 balance dump
+        self.register_datapack(
+            datapacks["LotV"]["96883"],
+            lambda r: r.expansion == "LotV" and 96883 <= r.build < 97364,
+        )
+        # first build of 5.0.16 was 97364
+        self.register_datapack(
+            datapacks["LotV"]["97364"],
+            lambda r: r.expansion == "LotV" and 97364 <= r.build,
         )
 
     # Internal Methods
