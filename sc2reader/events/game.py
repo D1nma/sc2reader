@@ -645,15 +645,20 @@ class CameraEvent(GameEvent):
 
 
 @loggable
-
 class AllianceEvent(GameEvent):
     """
     Generated when a player shares control or vision.
     """
-    def __init__(self, frames, data):
-        super().__init__(frames, data["player_id"])
+
+    def __init__(self, frame, pid, data):
+        super().__init__(frame, pid)
+
+        #: Alliance bitmask for shared vision
         self.alliance = data["alliance"]
+
+        #: Control bitmask for shared control
         self.control = data["control"]
+
 
 class ResourceTradeEvent(GameEvent):
     """
