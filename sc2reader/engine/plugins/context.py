@@ -10,10 +10,12 @@ class ContextLoader:
 
     def handleInitGame(self, event, replay):
         replay.units = set()
-        replay.unit = dict()
+        replay.unit = {}
 
-        # keep track of last TargetUnitCommandEvent for UpdateTargetUnitCommandEvent
-        self.last_target_ability_event = {}
+        # Keep the last targeted command on this replay, not the shared plugin.
+        # Commands refer back to players and their event lists, so a plugin
+        # cache would retain that graph after the caller releases the replay.
+        replay._last_target_ability_event = {}
 
     def handleGameEvent(self, event, replay):
         self.load_message_game_player(event, replay)
@@ -27,8 +29,8 @@ class ContextLoader:
 
         if event.ability_id not in replay.datapack.abilities:
             # safeguard against missing abilities
-            if event.player.pid in self.last_target_ability_event:
-                del self.last_target_ability_event[event.player.pid]
+            if event.player.pid in replay._last_target_ability_event:
+                del replay._last_target_ability_event[event.player.pid]
 
             if not getattr(replay, "marked_error", None):
                 replay.marked_error = True
@@ -56,7 +58,7 @@ class ContextLoader:
             self.logger.error(f"Other unit {event.other_unit_id} not found")
 
     def handleTargetUnitCommandEvent(self, event, replay):
-        self.last_target_ability_event[event.player.pid] = event
+        replay._last_target_ability_event[event.player.pid] = event
 
         if not replay.datapack:
             return
@@ -83,10 +85,10 @@ class ContextLoader:
         # We may not find a TargetUnitCommandEvent before finding an
         # UpdateTargetUnitCommandEvent, perhaps due to Missing Abilities in the
         # datapack
-        if event.player.pid in self.last_target_ability_event:
+        if event.player.pid in replay._last_target_ability_event:
             # store corresponding TargetUnitCommandEvent data in this event
             # currently using for *MacroTracker only, so only need ability name
-            event.ability_name = self.last_target_ability_event[
+            event.ability_name = replay._last_target_ability_event[
                 event.player.pid
             ].ability_name
 
@@ -96,7 +98,7 @@ class ContextLoader:
         if not replay.datapack:
             return
 
-        units = list()
+        units = []
         # TODO: Blizzard calls these subgroup flags but that doesn't make sense right now
         for (
             unit_id,
