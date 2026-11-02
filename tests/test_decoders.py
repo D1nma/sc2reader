@@ -1,9 +1,4 @@
 import unittest
-import sys
-from unittest.mock import MagicMock
-
-# Mock mpyq before importing sc2reader components
-sys.modules['mpyq'] = MagicMock()
 
 from sc2reader.decoders import ByteDecoder, BitPackedDecoder
 
